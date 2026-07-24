@@ -131,7 +131,7 @@ class _CategoryRow extends StatelessWidget {
     String emoji = '🛒';
     if (category == TransactionCategory.food) emoji = '🍔';
     if (category == TransactionCategory.transport) emoji = '🚗';
-    if (category == TransactionCategory.bill) emoji = '🧾';
+    if (category == TransactionCategory.utilities) emoji = '🧾';
     if (category == TransactionCategory.entertainment) emoji = '🎬';
     if (category == TransactionCategory.health) emoji = '🏥';
 
