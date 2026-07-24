@@ -279,14 +279,14 @@ class MockData {
     {
       'id': 'n-001', 'icon': '💰', 'type': 'credit',
       'title': 'Salary Received!',
-      'body': '\$5,500.00 credited to Main Savings.',
+      'body': 'TSH 5,500.00 credited to Main Savings.',
       'time': DateTime.now().subtract(const Duration(hours: 2)),
       'isRead': false,
     },
     {
       'id': 'n-002', 'icon': '💸', 'type': 'transfer',
       'title': 'Transfer Successful',
-      'body': '\$250.00 sent to Sarah Mitchell.',
+      'body': 'TSH 250.00 sent to Sarah Mitchell.',
       'time': DateTime.now().subtract(const Duration(days: 1)),
       'isRead': false,
     },
@@ -300,7 +300,7 @@ class MockData {
     {
       'id': 'n-004', 'icon': '🔔', 'type': 'bill',
       'title': 'Bill Payment Due',
-      'body': 'Electricity bill of \$124.30 is due in 3 days.',
+      'body': 'Electricity bill of TSH 124.30 is due in 3 days.',
       'time': DateTime.now().subtract(const Duration(days: 3)),
       'isRead': true,
     },
