@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
-import '../../core/utils/formatters.dart';
-import '../../data/mock/mock_data.dart';
-import '../../data/models/card_model.dart';
 import '../../core/widgets/section_header.dart';
+import '../../data/models/card_model.dart';
+import '../../data/repositories/banking_repository.dart';
 
 class CardsScreen extends StatefulWidget {
   const CardsScreen({super.key});
@@ -16,8 +15,27 @@ class CardsScreen extends StatefulWidget {
 }
 
 class _CardsScreenState extends State<CardsScreen> {
+  final _repo = BankingRepository();
   final PageController _pageCtrl = PageController(viewportFraction: 0.85);
   int _currIndex = 0;
+  List<CardModel> _cards = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() => _loading = true);
+    try {
+      final cards = await _repo.getCards();
+      setState(() { _cards = cards; _loading = false; });
+    } catch (e) {
+      setState(() => _loading = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -27,8 +45,11 @@ class _CardsScreenState extends State<CardsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cards = MockData.cards;
-    if (cards.isEmpty) return const Scaffold();
+    if (_loading) return const Scaffold(body: Center(child: CircularProgressIndicator(color: AppColors.primary)));
+    final cards = _cards;
+    if (cards.isEmpty) return const Scaffold(
+      body: Center(child: Text('No cards found in Firebase.',
+          style: TextStyle(color: AppColors.textSecondary))));
 
     final activeCard = cards[_currIndex];
 

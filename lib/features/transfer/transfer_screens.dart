@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/widgets/app_button.dart';
 import '../../core/utils/formatters.dart';
-import '../../data/mock/mock_data.dart';
+import '../../core/widgets/app_button.dart';
+import '../../data/models/account_model.dart';
+import '../../data/repositories/banking_repository.dart';
 
 // ── Transfer Success ──────────────────────────────────────────────────────────
 class TransferSuccessScreen extends StatefulWidget {
@@ -28,13 +29,11 @@ class _TransferSuccessScreenState extends State<TransferSuccessScreen>
     super.initState();
     _circleCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
     _contentCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-
     _circleScale = Tween<double>(begin: 0, end: 1).animate(
         CurvedAnimation(parent: _circleCtrl, curve: Curves.elasticOut));
     _contentOpacity = Tween<double>(begin: 0, end: 1).animate(_contentCtrl);
     _contentSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
         .animate(CurvedAnimation(parent: _contentCtrl, curve: Curves.easeOut));
-
     _runAnim();
   }
 
@@ -64,7 +63,6 @@ class _TransferSuccessScreenState extends State<TransferSuccessScreen>
           child: Column(
             children: [
               const Spacer(),
-              // Success circle
               ScaleTransition(
                 scale: _circleScale,
                 child: Container(
@@ -81,7 +79,6 @@ class _TransferSuccessScreenState extends State<TransferSuccessScreen>
                 ),
               ),
               const SizedBox(height: 32),
-              // Content
               SlideTransition(
                 position: _contentSlide,
                 child: FadeTransition(
@@ -95,7 +92,6 @@ class _TransferSuccessScreenState extends State<TransferSuccessScreen>
                           textAlign: TextAlign.center,
                           style: const TextStyle(color: AppColors.textSecondary, fontSize: 15, height: 1.5)),
                       const SizedBox(height: 32),
-                      // Receipt card
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
@@ -121,7 +117,6 @@ class _TransferSuccessScreenState extends State<TransferSuccessScreen>
                 ),
               ),
               const Spacer(),
-              // Buttons
               AppButton(
                 label: 'Back to Home',
                 icon: Icons.home_rounded,
@@ -132,7 +127,7 @@ class _TransferSuccessScreenState extends State<TransferSuccessScreen>
                 label: 'Share Receipt',
                 style: AppButtonStyle.secondary,
                 icon: Icons.share_rounded,
-                onPressed: () {}, // In a real app, share PDF
+                onPressed: () {},
               ),
             ],
           ),
@@ -153,8 +148,8 @@ class _ReceiptRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
-        Text(value, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13,
-            fontWeight: FontWeight.w600)),
+        Text(value, style: const TextStyle(color: AppColors.textPrimary,
+            fontSize: 13, fontWeight: FontWeight.w600)),
       ],
     );
   }
@@ -169,9 +164,32 @@ class RequestMoneyScreen extends StatefulWidget {
 }
 
 class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
+  final _repo = BankingRepository();
   final _amountCtrl = TextEditingController();
   final _noteCtrl   = TextEditingController();
   double _amount = 0;
+  AccountModel? _primaryAccount;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() => _loading = true);
+    try {
+      final accounts = await _repo.getAccounts();
+      final primary = accounts.firstWhere(
+        (a) => a.isPrimary,
+        orElse: () => accounts.first,
+      );
+      setState(() { _primaryAccount = primary; _loading = false; });
+    } catch (e) {
+      setState(() => _loading = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -181,11 +199,13 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
   }
 
   String get _qrData =>
-      'neobank://request?account=${MockData.accounts.first.accountNumber}'
+      'neobank://request?account=${_primaryAccount?.accountNumber ?? ''}'
       '&amount=$_amount&note=${_noteCtrl.text}';
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return const Scaffold(body: Center(child: CircularProgressIndicator(color: AppColors.primary)));
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -200,7 +220,6 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            // QR Code
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -210,25 +229,19 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
               ),
               child: Column(
                 children: [
+                  // QR placeholder — qr_flutter not supported on linux desktop
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    width: 180, height: 180,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: QrImageView(
-                      data: _qrData,
-                      size: 180,
-                      backgroundColor: Colors.white,
+                    child: const Center(
+                      child: Icon(Icons.qr_code_rounded, size: 140, color: Colors.black),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text(MockData.currentUser.name,
-                      style: const TextStyle(fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary, fontSize: 16)),
-                  const SizedBox(height: 4),
-                  Text(AppFormatters.maskAccountNumber(
-                      MockData.accounts.first.accountNumber),
+                  Text(_primaryAccount?.accountNumber ?? '',
                       style: const TextStyle(color: AppColors.textMuted, fontSize: 13)),
                   if (_amount > 0) ...[
                     const SizedBox(height: 12),
@@ -247,7 +260,6 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            // Amount input
             TextField(
               controller: _amountCtrl,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),

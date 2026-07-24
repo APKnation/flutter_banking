@@ -7,7 +7,8 @@ import '../../core/utils/formatters.dart';
 import '../../core/widgets/app_button.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
-import '../../data/mock/mock_data.dart';
+import '../../data/models/account_model.dart';
+import '../../data/repositories/banking_repository.dart';
 
 class SendMoneyScreen extends StatefulWidget {
   const SendMoneyScreen({super.key});
@@ -17,18 +18,39 @@ class SendMoneyScreen extends StatefulWidget {
 }
 
 class _SendMoneyScreenState extends State<SendMoneyScreen> {
+  final _repo = BankingRepository();
   final PageController _pageCtrl = PageController();
   int _step = 0;
 
   Map<String, String>? _selectedContact;
-  String _fromAccount = 'acc-001';
+  String _fromAccount = '';
   double _amount = 0;
   String _note = '';
   String _transferType = 'Instant';
   bool _isLoading = false;
+  List<AccountModel> _accounts = [];
 
-  final _amountCtrl = TextEditingController();
-  final _noteCtrl   = TextEditingController();
+  static const _recentContacts = [
+    {'name': 'Sarah Mitchell', 'phone': '+255 712 345 678', 'initials': 'SM'},
+    {'name': 'James Wilson',   'phone': '+255 754 987 654', 'initials': 'JW'},
+    {'name': 'Amani Hassan',   'phone': '+255 767 111 222', 'initials': 'AH'},
+    {'name': 'Grace Kimani',   'phone': '+255 788 333 444', 'initials': 'GK'},
+    {'name': 'Peter Ochieng',  'phone': '+255 732 555 666', 'initials': 'PO'},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccounts();
+  }
+
+  Future<void> _loadAccounts() async {
+    final accounts = await _repo.getAccounts();
+    if (mounted) setState(() {
+      _accounts = accounts;
+      if (accounts.isNotEmpty) _fromAccount = accounts.first.id;
+    });
+  }
 
   @override
   void dispose() {
@@ -113,7 +135,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 _RecipientStep(
-                  contacts: MockData.recentContacts,
+                  contacts: _recentContacts,
                   selected: _selectedContact,
                   onSelect: (c) { setState(() => _selectedContact = c); _next(); },
                 ),
@@ -121,7 +143,7 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
                   amountCtrl: _amountCtrl,
                   noteCtrl: _noteCtrl,
                   fromAccount: _fromAccount,
-                  accounts: MockData.accounts,
+                  accounts: _accounts,
                   transferType: _transferType,
                   onAccountChange: (v) => setState(() => _fromAccount = v),
                   onTypeChange: (v) => setState(() => _transferType = v),
