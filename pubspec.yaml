@@ -1,0 +1,46 @@
+name: test1
+description: "NeoBank — Advanced Mobile Banking Application"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.14.0-60.0.dev
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
+
+  # Navigation
+  go_router: ^14.2.7
+
+  # UI & Typography
+  google_fonts: ^6.2.1
+  shimmer: ^3.0.0
+  percent_indicator: ^4.2.3
+
+  # Charts
+  fl_chart: ^0.68.0
+
+  # QR Code
+  qr_flutter: ^4.1.0
+
+  # Security & Storage
+  local_auth: ^2.3.0
+  shared_preferences: ^2.3.2
+
+  # Formatting & Utilities
+  intl: ^0.19.0
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
