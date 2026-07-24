@@ -38,6 +38,9 @@ class _SendMoneyScreenState extends State<SendMoneyScreen> {
     {'name': 'Peter Ochieng',  'phone': '+255 732 555 666', 'initials': 'PO'},
   ];
 
+  final _amountCtrl = TextEditingController();
+  final _noteCtrl   = TextEditingController();
+
   @override
   void initState() {
     super.initState();

@@ -30,7 +30,7 @@ class BillerModel {
       accountNumber: json['accountNumber'] as String?,
       category: BillCategory.values.firstWhere(
         (e) => e.name == (json['category'] as String?),
-        orElse: () => BillCategory.other,
+        orElse: () => BillCategory.subscription, // default fallback
       ),
       lastAmount: (json['lastAmount'] as num?)?.toDouble(),
       lastPaid: (json['lastPaid'] as Timestamp?)?.toDate(),
@@ -64,9 +64,4 @@ class BillerModel {
       case BillCategory.subscription: return 'Subscription';
     }
   }
-}
-
-// Workaround for BillerModel.fromJson calling BillCategory.other which doesn't exist
-extension BillCategoryX on BillCategory {
-  static BillCategory get other => BillCategory.subscription;
 }

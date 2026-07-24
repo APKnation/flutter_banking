@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
-import '../models/account_model.dart';
-import '../models/bill_model.dart';
-import '../models/card_model.dart';
-import '../models/savings_goal_model.dart';
-import '../models/transaction_model.dart';
-import '../models/user_model.dart';
+import '../../data/models/account_model.dart';
+import '../../data/models/bill_model.dart';
+import '../../data/models/card_model.dart';
+import '../../data/models/savings_goal_model.dart';
+import '../../data/models/transaction_model.dart';
+import '../../data/models/user_model.dart';
 
 /// One-time seeder: uploads mock data to Firebase Cloud Firestore.
 /// Run this ONCE from a button or during development to populate your

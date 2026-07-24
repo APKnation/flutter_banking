@@ -9,27 +9,16 @@ class DashboardCubit extends Cubit<DashboardState> {
   Future<void> load() async {
     emit(const DashboardLoading());
     try {
-      final results = await Future.wait([
-        _repo.getUser(),
-        _repo.getAccounts(),
-        _repo.getTransactions(limit: 5),
-        _repo.getWeeklySpending(),
-      ]);
-
-      final user        = results[0];
-      final accounts    = results[1] as dynamic;
-      final txns        = results[2] as dynamic;
-      final weeklyData  = results[3] as List<double>;
-
-      final totalBalance = (accounts as List)
-          .fold<double>(0, (s, a) => s + (a.balance as double));
-
-      // Guard: if there is no user document yet, emit an error prompting seed
+      final user = await _repo.getUser();
       if (user == null) {
         emit(const DashboardError(
             'No user data found in Firebase. Please seed the database first.'));
         return;
       }
+      final accounts     = await _repo.getAccounts();
+      final txns         = await _repo.getTransactions(limit: 5);
+      final weeklyData   = await _repo.getWeeklySpending();
+      final totalBalance = accounts.fold<double>(0, (s, a) => s + a.balance);
 
       emit(DashboardLoaded(
         user: user,
