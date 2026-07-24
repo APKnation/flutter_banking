@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../features/splash/splash_screen.dart';
-import '../features/auth/pin_screen.dart';
-import '../features/auth/biometric_screen.dart';
-import '../features/main/main_shell.dart';
-import '../features/dashboard/home_screen.dart';
-import '../features/transactions/transactions_screen.dart';
-import '../features/cards/cards_screen.dart';
-import '../features/analytics/analytics_screen.dart';
-import '../features/profile/profile_screen.dart';
-import '../features/accounts/accounts_screen.dart';
-import '../features/bills/bills_screen.dart';
-import '../features/transfer/send_money_screen.dart';
-import '../features/transfer/transfer_screens.dart';
-import '../data/models/account_model.dart';
+import '../../features/splash/splash_screen.dart';
+import '../../features/auth/pin_screen.dart';
+import '../../features/auth/biometric_screen.dart';
+import '../../features/main/main_shell.dart';
+import '../../features/dashboard/home_screen.dart';
+import '../../features/transactions/transactions_screen.dart';
+import '../../features/cards/cards_screen.dart';
+import '../../features/analytics/analytics_screen.dart';
+import '../../features/profile/profile_screen.dart';
+import '../../features/accounts/accounts_screen.dart';
+import '../../features/bills/bills_screen.dart';
+import '../../features/transfer/send_money_screen.dart';
+import '../../features/transfer/transfer_screens.dart';
+import '../../data/models/account_model.dart';
 
 final GlobalKey<NavigatorState> _rootNavKey = GlobalKey<NavigatorState>();
 
