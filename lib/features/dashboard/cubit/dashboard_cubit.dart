@@ -13,14 +13,29 @@ class DashboardCubit extends Cubit<DashboardState> {
         _repo.getUser(),
         _repo.getAccounts(),
         _repo.getTransactions(limit: 5),
+        _repo.getWeeklySpending(),
       ]);
-      final accounts = results[1] as dynamic;
-      final totalBalance = accounts.fold<double>(0, (s, a) => s + a.balance);
+
+      final user        = results[0];
+      final accounts    = results[1] as dynamic;
+      final txns        = results[2] as dynamic;
+      final weeklyData  = results[3] as List<double>;
+
+      final totalBalance = (accounts as List)
+          .fold<double>(0, (s, a) => s + (a.balance as double));
+
+      // Guard: if there is no user document yet, emit an error prompting seed
+      if (user == null) {
+        emit(const DashboardError(
+            'No user data found in Firebase. Please seed the database first.'));
+        return;
+      }
+
       emit(DashboardLoaded(
-        user: results[0] as dynamic,
+        user: user,
         accounts: accounts,
-        recentTransactions: results[2] as dynamic,
-        weeklySpending: [120, 250, 80, 340, 190, 420, 270],
+        recentTransactions: txns,
+        weeklySpending: weeklyData,
         balanceVisible: true,
         totalBalance: totalBalance,
       ));
