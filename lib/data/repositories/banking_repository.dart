@@ -54,7 +54,7 @@ class BankingRepository {
 
   Future<double> getTotalBalance({String uid = 'user-001'}) async {
     final accounts = await getAccounts(uid: uid);
-    return accounts.fold(0.0, (acc, a) => acc + a.balance);
+    return accounts.fold<double>(0.0, (acc, a) => acc + a.balance);
   }
 
   Future<void> updateAccountBalance(String accountId, double newBalance) async {

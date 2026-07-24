@@ -162,23 +162,24 @@ class _PinScreenState extends State<PinScreen> with TickerProviderStateMixin {
       constraints: const BoxConstraints(maxWidth: 360),
       child: GridView.builder(
         shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1.4,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 1.4,
+        ),
+        itemCount: keys.length,
+        itemBuilder: (_, i) {
+          final key = keys[i];
+          if (key.isEmpty) return const SizedBox();
+          return _NumpadKey(
+            label: key,
+            onTap: () => key == '⌫' ? _onDelete() : _onKey(key),
+            isDelete: key == '⌫',
+          );
+        },
       ),
-      itemCount: keys.length,
-      itemBuilder: (_, i) {
-        final key = keys[i];
-        if (key.isEmpty) return const SizedBox();
-        return _NumpadKey(
-          label: key,
-          onTap: () => key == '⌫' ? _onDelete() : _onKey(key),
-          isDelete: key == '⌫',
-        );
-      },
     );
   }
 }
