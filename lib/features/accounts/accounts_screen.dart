@@ -1,21 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_sizes.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/widgets/app_button.dart';
-import '../../data/mock/mock_data.dart';
+import '../../core/widgets/shimmer_loading.dart';
 import '../../data/models/account_model.dart';
+import '../../data/repositories/banking_repository.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter/services.dart';
 
-class AccountsScreen extends StatelessWidget {
+class AccountsScreen extends StatefulWidget {
   const AccountsScreen({super.key});
 
   @override
+  State<AccountsScreen> createState() => _AccountsScreenState();
+}
+
+class _AccountsScreenState extends State<AccountsScreen> {
+  final _repo = BankingRepository();
+  List<AccountModel> _accounts = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() => _loading = true);
+    try {
+      final accounts = await _repo.getAccounts();
+      setState(() { _accounts = accounts; _loading = false; });
+    } catch (e) {
+      setState(() => _loading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final accounts = MockData.accounts;
-    final total = accounts.fold(0.0, (s, a) => s + a.balance);
+    final total = _accounts.fold(0.0, (s, a) => s + a.balance);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -27,55 +52,60 @@ class AccountsScreen extends StatelessWidget {
           onPressed: () => context.pop(),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Total balance card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(AppSizes.radiusXL),
-                boxShadow: [
-                  BoxShadow(color: AppColors.primary.withValues(alpha: 0.4),
-                      blurRadius: 24, offset: const Offset(0, 8)),
-                ],
-              ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Total Net Worth',
-                      style: TextStyle(color: Colors.white70, fontSize: 13)),
-                  const SizedBox(height: 6),
-                  Text(AppFormatters.formatCurrency(total),
-                      style: const TextStyle(color: Colors.white, fontSize: 32,
-                          fontWeight: FontWeight.w800, letterSpacing: -0.5)),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Icon(Icons.trending_up_rounded,
-                          color: AppColors.accent, size: 16),
-                      const SizedBox(width: 6),
-                      const Text('+8.2% this year',
-                          style: TextStyle(color: AppColors.accent, fontSize: 13,
-                              fontWeight: FontWeight.w600)),
-                    ],
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(AppSizes.radiusXL),
+                      boxShadow: [
+                        BoxShadow(color: AppColors.primary.withValues(alpha: 0.4),
+                            blurRadius: 24, offset: const Offset(0, 8)),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Total Net Worth',
+                            style: TextStyle(color: Colors.white70, fontSize: 13)),
+                        const SizedBox(height: 6),
+                        Text(AppFormatters.formatCurrency(total),
+                            style: const TextStyle(color: Colors.white, fontSize: 32,
+                                fontWeight: FontWeight.w800, letterSpacing: -0.5)),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            const Icon(Icons.trending_up_rounded, color: AppColors.accent, size: 16),
+                            const SizedBox(width: 6),
+                            const Text('+8.2% this year',
+                                style: TextStyle(color: AppColors.accent, fontSize: 13,
+                                    fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(height: 28),
+                  const Text('All Accounts', style: TextStyle(fontSize: 17,
+                      fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                  const SizedBox(height: 14),
+                  if (_accounts.isEmpty)
+                    const Text('No accounts found in Firebase.',
+                        style: TextStyle(color: AppColors.textMuted))
+                  else
+                    ..._accounts.map((a) => _AccountCard(
+                        account: a,
+                        onTap: () => context.push('/accounts/detail', extra: a))),
                 ],
               ),
             ),
-            const SizedBox(height: 28),
-            const Text('All Accounts', style: TextStyle(fontSize: 17,
-                fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-            const SizedBox(height: 14),
-            ...accounts.map((a) => _AccountCard(account: a,
-                onTap: () => context.push('/accounts/detail', extra: a))),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -106,11 +136,8 @@ class _AccountCard extends StatelessWidget {
           children: [
             Container(
               width: 48, height: 48,
-              decoration: BoxDecoration(
-                gradient: grad, borderRadius: BorderRadius.circular(14),
-              ),
-              child: const Icon(Icons.account_balance_wallet_rounded,
-                  color: Colors.white, size: 24),
+              decoration: BoxDecoration(gradient: grad, borderRadius: BorderRadius.circular(14)),
+              child: const Icon(Icons.account_balance_wallet_rounded, color: Colors.white, size: 24),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -160,7 +187,7 @@ class _AccountCard extends StatelessWidget {
   }
 }
 
-// ── Account Detail Screen ─────────────────────────────────────────────────────
+// ── Account Detail Screen ──────────────────────────────────────────────────────
 class AccountDetailScreen extends StatelessWidget {
   final AccountModel account;
   const AccountDetailScreen({super.key, required this.account});
@@ -179,17 +206,13 @@ class AccountDetailScreen extends StatelessWidget {
         ),
         title: Text(account.name),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.share_rounded),
-            onPressed: () {},
-          ),
+          IconButton(icon: const Icon(Icons.share_rounded), onPressed: () {}),
         ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            // Balance
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
@@ -214,7 +237,6 @@ class AccountDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            // Account details
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -238,15 +260,13 @@ class AccountDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            // QR Code
             const Text('Share via QR', style: TextStyle(fontSize: 16,
                 fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
             const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                color: Colors.white, borderRadius: BorderRadius.circular(20),
               ),
               child: QrImageView(data: qrData, size: 180, backgroundColor: Colors.white),
             ),
@@ -287,11 +307,10 @@ class _DetailRow extends StatelessWidget {
                 onTap: () {
                   Clipboard.setData(ClipboardData(text: value));
                   ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Copied to clipboard'),
+                      const SnackBar(content: Text('Copied!'),
                           duration: Duration(seconds: 1)));
                 },
-                child: const Icon(Icons.copy_rounded,
-                    color: AppColors.primary, size: 16),
+                child: const Icon(Icons.copy_rounded, color: AppColors.primary, size: 16),
               ),
             ],
           ],
