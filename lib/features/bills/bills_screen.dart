@@ -40,7 +40,7 @@ class BillsScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: AppColors.errorGradient,
+                color: AppColors.error, // Fallback since errorGradient isn't defined
                 borderRadius: BorderRadius.circular(AppSizes.radiusLG),
                 boxShadow: [
                   BoxShadow(color: AppColors.error.withValues(alpha: 0.3),
@@ -72,7 +72,6 @@ class BillsScreen extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                    onPath: () {}, // Handled by gesture detector
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: AppColors.error,
@@ -155,7 +154,7 @@ class _SavedBillerCard extends StatelessWidget {
                       fontWeight: FontWeight.w600, fontSize: 13),
                   maxLines: 1, overflow: TextOverflow.ellipsis),
               const SizedBox(height: 4),
-              Text(AppFormatters.formatCurrency(biller.lastAmount),
+              Text(AppFormatters.formatCurrency(biller.lastAmount ?? 0.0),
                   style: const TextStyle(color: AppColors.primary,
                       fontWeight: FontWeight.w700, fontSize: 14)),
             ],
@@ -181,7 +180,7 @@ class _CategoryButton extends StatelessWidget {
       case BillCategory.subscription: emoji = '🎬'; break;
       case BillCategory.insurance: emoji = '🏥'; break;
       case BillCategory.gas: emoji = '🔥'; break;
-      case BillCategory.other: emoji = '🧾'; break;
+      case BillCategory.rent: emoji = '🏠'; break;
     }
 
     return Column(

@@ -94,7 +94,6 @@ class _MiniSpendingChartState extends State<MiniSpendingChart> {
                   );
                 }).toList(),
               ),
-              duration: const Duration(milliseconds: 600),
             ),
           ),
         ],
