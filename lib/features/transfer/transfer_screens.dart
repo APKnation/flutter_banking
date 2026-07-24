@@ -255,7 +255,7 @@ class _RequestMoneyScreenState extends State<RequestMoneyScreen> {
               style: const TextStyle(color: AppColors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Request amount (optional)',
-                prefixText: '\$ ',
+                prefixText: 'TSH ',
                 filled: true, fillColor: AppColors.surface,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(14),
                     borderSide: const BorderSide(color: AppColors.border)),

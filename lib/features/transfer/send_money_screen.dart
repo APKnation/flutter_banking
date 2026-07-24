@@ -303,7 +303,7 @@ class _AmountStep extends StatelessWidget {
           Center(
             child: Column(
               children: [
-                const Text('USD', style: TextStyle(color: AppColors.textMuted, fontSize: 14)),
+                const Text('TSH', style: TextStyle(color: AppColors.textMuted, fontSize: 14)),
                 const SizedBox(height: 4),
                 IntrinsicWidth(
                   child: TextField(
@@ -321,7 +321,7 @@ class _AmountStep extends StatelessWidget {
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      prefixText: '\$ ',
+                      prefixText: 'TSH ',
                       prefixStyle: TextStyle(fontSize: 48, fontWeight: FontWeight.w800,
                           color: AppColors.textMuted),
                     ),

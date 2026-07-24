@@ -3,15 +3,15 @@ import 'package:intl/intl.dart';
 class AppFormatters {
   AppFormatters._();
 
-  static String formatCurrency(double amount, {String symbol = '\$', int decimals = 2}) {
+  static String formatCurrency(double amount, {String symbol = 'TSH ', int decimals = 2}) {
     final f = NumberFormat.currency(symbol: symbol, decimalDigits: decimals);
     return f.format(amount);
   }
 
   static String formatCompact(double amount) {
-    if (amount >= 1000000) return '\$${(amount / 1000000).toStringAsFixed(2)}M';
-    if (amount >= 1000) return '\$${(amount / 1000).toStringAsFixed(1)}K';
-    return '\$${amount.toStringAsFixed(2)}';
+    if (amount >= 1000000) return 'TSH ${(amount / 1000000).toStringAsFixed(2)}M';
+    if (amount >= 1000) return 'TSH ${(amount / 1000).toStringAsFixed(1)}K';
+    return 'TSH ${amount.toStringAsFixed(2)}';
   }
 
   static String formatDate(DateTime date) {
