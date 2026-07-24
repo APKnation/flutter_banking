@@ -149,15 +149,17 @@ class _SettingsSection extends StatelessWidget {
               fontSize: 13, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
         ),
         const SizedBox(height: 12),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Material(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppSizes.radiusLG),
-            border: Border.all(color: AppColors.border, width: 0.5),
-          ),
-          child: Column(
-            children: items.asMap().entries.map((e) {
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppSizes.radiusLG),
+              side: const BorderSide(color: AppColors.border, width: 0.5),
+            ),
+            child: Column(
+              children: items.asMap().entries.map((e) {
               return Column(
                 children: [
                   ListTile(

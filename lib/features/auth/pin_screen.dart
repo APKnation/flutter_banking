@@ -158,8 +158,10 @@ class _PinScreenState extends State<PinScreen> with TickerProviderStateMixin {
 
   Widget _buildNumpad() {
     final keys = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
-    return GridView.builder(
-      shrinkWrap: true,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 360),
+      child: GridView.builder(
+        shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
