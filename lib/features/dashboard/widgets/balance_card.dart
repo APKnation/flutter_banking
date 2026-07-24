@@ -111,7 +111,7 @@ class BalanceCard extends StatelessWidget {
               key: ValueKey(isVisible),
               isVisible
                   ? AppFormatters.formatCurrency(totalBalance)
-                  : '\$ ••••••••',
+                  : 'TSH ••••••••',
               style: const TextStyle(color: Colors.white, fontSize: 34,
                   fontWeight: FontWeight.w800, letterSpacing: -0.5),
             ),
@@ -261,7 +261,7 @@ class AccountSummaryCard extends StatelessWidget {
             Text(
               isVisible
                   ? AppFormatters.formatCurrency(account.balance)
-                  : '\$••••••',
+                  : 'TSH ••••••',
               style: const TextStyle(color: Colors.white, fontSize: 20,
                   fontWeight: FontWeight.w800),
             ),

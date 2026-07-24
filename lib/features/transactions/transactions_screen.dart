@@ -458,7 +458,7 @@ class TransactionDetailSheet extends StatelessWidget {
                           color: AppColors.textPrimary)),
                   const SizedBox(height: 4),
                   Text(
-                    '${isIn ? '+' : '-'}\$${transaction.amount.toStringAsFixed(2)}',
+                    '${isIn ? '+' : '-'}${AppFormatters.formatCurrency(transaction.amount)}',
                     style: TextStyle(fontSize: 36, fontWeight: FontWeight.w800, color: color,
                         decoration: isFailed ? TextDecoration.lineThrough : null),
                   ),
@@ -475,7 +475,7 @@ class TransactionDetailSheet extends StatelessWidget {
             if (transaction.toAccount != null)
               _Row('To', transaction.toAccount!),
             if (transaction.fee != null)
-              _Row('Fee', transaction.fee == 0 ? 'Free' : '\$${transaction.fee!.toStringAsFixed(2)}'),
+              _Row('Fee', transaction.fee == 0 ? 'Free' : AppFormatters.formatCurrency(transaction.fee!)),
             if (transaction.note != null && transaction.note!.isNotEmpty)
               _Row('Note', transaction.note!),
             const SizedBox(height: 24),

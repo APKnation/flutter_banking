@@ -80,7 +80,7 @@ class TransactionListTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '${isIncoming ? '+' : '-'}\$${transaction.amount.toStringAsFixed(2)}',
+                  '${isIncoming ? '+' : '-'}${AppFormatters.formatCurrency(transaction.amount)}',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700,
                       color: amountColor,
                       decoration: isFailed ? TextDecoration.lineThrough : null),

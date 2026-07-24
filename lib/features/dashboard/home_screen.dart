@@ -242,7 +242,7 @@ class _TransactionDetailSheet extends StatelessWidget {
             const SizedBox(height: 4),
             Center(
               child: Text(
-                '${transaction.isIncoming ? '+' : '-'}\$${transaction.amount.toStringAsFixed(2)}',
+                '${transaction.isIncoming ? '+' : '-'}${AppFormatters.formatCurrency(transaction.amount)}',
                 style: TextStyle(
                   fontSize: 32, fontWeight: FontWeight.w800,
                   color: transaction.isIncoming ? AppColors.success : AppColors.error,

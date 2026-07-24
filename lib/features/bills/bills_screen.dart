@@ -66,7 +66,7 @@ class BillsScreen extends StatelessWidget {
                             style: TextStyle(color: Colors.white, fontWeight: 
                                 FontWeight.w700, fontSize: 16)),
                         SizedBox(height: 4),
-                        Text('\$124.30 due in 3 days',
+                        Text('TSH 124.30 due in 3 days',
                             style: TextStyle(color: Colors.white, fontSize: 13)),
                       ],
                     ),
