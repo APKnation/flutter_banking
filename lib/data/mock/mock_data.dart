@@ -26,21 +26,21 @@ class MockData {
       id: 'acc-001', name: 'Main Savings',
       accountNumber: '4521897654', iban: 'US12 3456 7890 1234 5678',
       bic: 'NEOBK001', balance: 24580.50, type: AccountType.savings,
-      currency: 'USD', isPrimary: true, interestRate: 2.5,
+      currency: 'TSH', isPrimary: true, interestRate: 2.5,
       createdAt: DateTime(2022, 3, 15),
     ),
     AccountModel(
       id: 'acc-002', name: 'Checking Account',
       accountNumber: '7893214560', iban: 'US98 7654 3210 9876 5432',
       bic: 'NEOBK001', balance: 5430.25, type: AccountType.checking,
-      currency: 'USD', isPrimary: false,
+      currency: 'TSH', isPrimary: false,
       createdAt: DateTime(2022, 3, 15),
     ),
     AccountModel(
       id: 'acc-003', name: 'Investment Portfolio',
       accountNumber: '1234567890', iban: 'US11 2345 6789 0123 4567',
       bic: 'NEOBK001', balance: 85230.75, type: AccountType.investment,
-      currency: 'USD', isPrimary: false, interestRate: 8.2,
+      currency: 'TSH', isPrimary: false, interestRate: 8.2,
       createdAt: DateTime(2022, 6, 20),
     ),
   ];
@@ -267,7 +267,7 @@ class MockData {
     {'name': 'Robert Park',    'phone': '+1 555 0106', 'initials': 'RP'},
   ];
 
-  // ── Exchange Rates (USD base) ─────────────────────────────────────────────────
+  // ── Exchange Rates (TSH base) ─────────────────────────────────────────────────
   static Map<String, double> get exchangeRates => {
     'EUR': 0.92, 'GBP': 0.79, 'JPY': 149.50, 'AUD': 1.53,
     'CAD': 1.36, 'CHF': 0.89, 'CNY': 7.24,  'INR': 83.15,
