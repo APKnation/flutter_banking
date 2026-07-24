@@ -1,4 +1,6 @@
-enum CardType { visa, mastercard, amex }
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+enum CardType   { visa, mastercard, amex }
 enum CardStatus { active, frozen, expired, blocked }
 
 class CardModel {
@@ -33,6 +35,50 @@ class CardModel {
     required this.internationalPayments,
     this.gradientIndex = 0,
   });
+
+  factory CardModel.fromJson(String docId, Map<String, dynamic> json) {
+    return CardModel(
+      id: docId,
+      cardNumber: json['cardNumber'] as String? ?? '',
+      cardholderName: json['cardholderName'] as String? ?? '',
+      expiryDate: json['expiryDate'] as String? ?? '',
+      cvv: json['cvv'] as String? ?? '',
+      type: CardType.values.firstWhere(
+        (e) => e.name == (json['type'] as String?),
+        orElse: () => CardType.visa,
+      ),
+      status: CardStatus.values.firstWhere(
+        (e) => e.name == (json['status'] as String?),
+        orElse: () => CardStatus.active,
+      ),
+      isVirtual: json['isVirtual'] as bool? ?? false,
+      spendingLimit: (json['spendingLimit'] as num?)?.toDouble() ?? 0.0,
+      currentSpend: (json['currentSpend'] as num?)?.toDouble() ?? 0.0,
+      onlineTransactions: json['onlineTransactions'] as bool? ?? true,
+      atmWithdrawals: json['atmWithdrawals'] as bool? ?? true,
+      internationalPayments: json['internationalPayments'] as bool? ?? false,
+      gradientIndex: json['gradientIndex'] as int? ?? 0,
+    );
+  }
+
+  factory CardModel.fromSnapshot(DocumentSnapshot doc) =>
+      CardModel.fromJson(doc.id, doc.data() as Map<String, dynamic>? ?? {});
+
+  Map<String, dynamic> toJson() => {
+        'cardNumber': cardNumber,
+        'cardholderName': cardholderName,
+        'expiryDate': expiryDate,
+        'cvv': cvv,
+        'type': type.name,
+        'status': status.name,
+        'isVirtual': isVirtual,
+        'spendingLimit': spendingLimit,
+        'currentSpend': currentSpend,
+        'onlineTransactions': onlineTransactions,
+        'atmWithdrawals': atmWithdrawals,
+        'internationalPayments': internationalPayments,
+        'gradientIndex': gradientIndex,
+      };
 
   bool get isFrozen => status == CardStatus.frozen;
   bool get isActive => status == CardStatus.active;
